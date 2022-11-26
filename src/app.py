@@ -10,6 +10,7 @@ from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User
 #from models import Person
+import requests
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -36,14 +37,42 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
+@app.route('/people', methods=['GET'])
 def handle_hello():
+    people_response = requests.get('https://swapi.dev/api/people')
+    results = people_response.json()["results"]
+    new_results = []
+    for i in results: 
+        new_results.append(i["name"])
+       
+    return jsonify(new_results), 200
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
 
-    return jsonify(response_body), 200
+@app.route('/starship', methods=['GET'])
+def handle_by():
+    starships_response = requests.get('https://swapi.dev/api/starships')
+    results = starships_response.json()["results"]
+    new_results = []
+    for i in results: 
+        new_results.append(i["name"])
+       
+    return jsonify(new_results), 200
+
+
+@app.route('/planets', methods=['GET'])
+def handle_plan():
+    planets_response = requests.get('https://swapi.tech/api/planets')
+    results = planets_response.json()["results"]
+    new_results = []
+    for i in results: 
+        new_results.append(i["name"])
+       
+    return jsonify(new_results), 200
+
+
+
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
